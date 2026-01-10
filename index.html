@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pure Social Spark</title>
+
+<style>
+:root {
+  --bg:#f4f6fb;
+  --card:#fff;
+  --text:#111;
+  --primary:#6366f1;
+  --secondary:#8b5cf6;
+  --border:#e5e7eb;
+  --hover:#f3f4f6;
+}
+body.dark {
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#f8fafc;
+  --border:#334155;
+  --hover:#334155;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:background 0.3s,color 0.3s;
+}
+button{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  padding:12px 24px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:600;
+  font-size:15px;
+  transition:all 0.3s;
+  position:relative;
+  overflow:hidden;
+}
+button::before{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:0;
+  height:0;
+  border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  transform:translate(-50%,-50%);
+  transition:width 0.6s,height 0.6s;
+}
+button:hover::before{
+  width:300px;
+  height:300px;
+}
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(99,102,241,0.4);
+}
+button:active{
+  transform:translateY(0);
+}
+input,textarea{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  font-size:14px;
+  transition:border 0.2s;
+}
+input:focus,textarea:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+
+/* Header */
+header{
+  position:sticky;
+  top:0;
+  background:var(--card);
+  padding:14px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--border);
+  z-index:100;
+  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+  backdrop-filter:blur(10px);
+}
+header .logo{
+  font-size:26px;
+  font-weight:700;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  cursor:pointer;
+  transition:transform 0.2s;
+}
+header .logo:hover{
+  transform:scale(1.05);
+}
+header .search-container{
+  flex:1;
+  max-width:500px;
+  margin:0 24px;
+  position:relative;
+}
+header .search-container input{
+  width:100%;
+  padding:12px 44px 12px 20px;
+  margin:0;
+  border-radius:24px;
+  background:var(--hover);
+  border:1px solid var(--border);
+  font-size:15px;
+  transition:all 0.3s;
+}
+header .search-container input:focus{
+  background:var(--card);
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(99,102,241,0.1);
+}
+header .search-icon{
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#6b7280;
+  font-size:18px;
+  pointer-events:none;
+}
+header .nav-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+header .nav-icon{
+  font-size:22px;
+  cursor:pointer;
+  padding:10px;
+  border-radius:50%;
+  transition:all 0.2s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:40px;
+  height:40px;
+}
+header .nav-icon:hover{
+  background:var(--hover);
+  transform:scale(1.1);
+}
+
+/* Layout */
+.layout{
+  display:grid;
+  grid-template-columns:280px 1fr 320px;
+  gap:24px;
+  padding:24px;
+  max-width:1400px;
+  margin:0 auto;
+}
+
+/* Left Sidebar */
+.left-sidebar{
+  position:sticky;
+  top:80px;
+  height:fit-content;
+  background:var(--card);
+  padding:24px;
+  border-radius:20px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.08);
+  transition:transform 0.2s;
+}
+.left-sidebar:hover{
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+}
+.sidebar-item{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 16px;
+  margin-bottom:6px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:all 0.2s;
+  text-decoration:none;
+  color:var(--text);
+  font-size:15px;
+  font-weight:500;
+}
+.sidebar-item:hover{
+  background:var(--hover);
+  transform:translateX(4px);
+}
+.sidebar-item.active{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+  box-shadow:0 4px 12px rgba(99,102,241,0.3);
+}
+.sidebar-item.active:hover{
+  transform:translateX(4px);
+}
+.sidebar-item-icon{
+  font-size:22px;
+  width:24px;
+  text-align:center;
+}
+
+/* Center Feed */
+.main-content{
+  min-width:0;
+}
+.stories-container{
+  background:var(--card);
+  padding:24px;
+  border-radius:20px;
+  margin-bottom:28px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.08);
+  overflow-x:auto;
+  scroll-behavior:smooth;
+}
+.stories-container::-webkit-scrollbar{
+  height:4px;
+}
+.stories-container::-webkit-scrollbar-track{
+  background:var(--hover);
+  border-radius:10px;
+}
+.stories-container::-webkit-scrollbar-thumb{
+  background:var(--primary);
+  border-radius:10px;
+}
+.stories{
+  display:flex;
+  gap:20px;
+  padding:4px 0;
+}
+.story{
+  flex:0 0 auto;
+  text-align:center;
+  cursor:pointer;
+  transition:transform 0.3s;
+}
+.story:hover{
+  transform:translateY(-4px);
+}
+.story-img{
+  width:88px;
+  height:88px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid transparent;
+  background:linear-gradient(var(--card),var(--card)) padding-box,
+              linear-gradient(135deg,var(--primary),var(--secondary)) border-box;
+  padding:3px;
+  transition:all 0.3s;
+  box-shadow:0 4px 12px rgba(99,102,241,0.2);
+}
+.story:hover .story-img{
+  box-shadow:0 6px 20px rgba(99,102,241,0.4);
+  transform:scale(1.05);
+}
+.story-name{
+  font-size:13px;
+  margin-top:10px;
+  max-width:88px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-weight:500;
+  color:var(--text);
+}
+.card{
+  background:var(--card);
+  padding:24px;
+  border-radius:20px;
+  margin-bottom:24px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.08);
+  transition:all 0.3s;
+  border:1px solid transparent;
+}
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 8px 24px rgba(0,0,0,0.12);
+  border-color:var(--border);
+}
+.create-post{
+  margin-bottom:28px;
+  animation:slideDown 0.4s ease;
+}
+@keyframes slideDown{
+  from{
+    opacity:0;
+    transform:translateY(-20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+.create-post-header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:18px;
+}
+.profile-img{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--primary);
+  transition:transform 0.2s;
+  cursor:pointer;
+}
+.profile-img:hover{
+  transform:scale(1.1);
+}
+.create-post textarea{
+  min-height:100px;
+  resize:none;
+  margin-bottom:12px;
+}
+.create-post-actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.file-input-wrapper{
+  position:relative;
+  display:inline-block;
+}
+.file-input-wrapper input[type=file]{
+  position:absolute;
+  opacity:0;
+  width:0;
+  height:0;
+}
+.file-input-label{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 16px;
+  background:var(--hover);
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+  transition:background 0.2s;
+}
+.file-input-label:hover{
+  background:var(--border);
+}
+.post-card{
+  margin-bottom:28px;
+  animation:fadeIn 0.5s ease;
+}
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+.post-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+.post-header-info{
+  flex:1;
+}
+.post-header-info .username{
+  font-weight:600;
+  font-size:15px;
+}
+.post-header-info .time{
+  font-size:12px;
+  color:#6b7280;
+}
+.post-image{
+  width:100%;
+  border-radius:16px;
+  margin:16px 0;
+  max-height:600px;
+  object-fit:cover;
+  box-shadow:0 4px 16px rgba(0,0,0,0.1);
+  transition:transform 0.3s;
+  cursor:pointer;
+}
+.post-image:hover{
+  transform:scale(1.02);
+}
+.post-caption{
+  margin:12px 0;
+  line-height:1.6;
+  font-size:15px;
+}
+.post-actions{
+  display:flex;
+  align-items:center;
+  gap:24px;
+  padding:16px 0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  margin:16px 0;
+}
+.action-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:none;
+  border:none;
+  color:var(--text);
+  cursor:pointer;
+  padding:10px 12px;
+  border-radius:10px;
+  transition:all 0.2s;
+  font-size:16px;
+  font-weight:500;
+}
+.action-btn:hover{
+  background:var(--hover);
+  transform:scale(1.05);
+}
+.action-btn.liked{
+  color:#ef4444;
+}
+.action-btn.liked:hover{
+  background:rgba(239,68,68,0.1);
+}
+.comments-section{
+  margin-top:12px;
+}
+.comment-input-wrapper{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+.comment-input-wrapper input{
+  flex:1;
+  margin:0;
+  padding:10px 12px;
+  font-size:14px;
+}
+.comment-input-wrapper button{
+  padding:10px 16px;
+  margin:0;
+}
+.comment{
+  display:flex;
+  gap:12px;
+  margin-top:12px;
+  padding:10px;
+  border-radius:10px;
+  transition:all 0.2s;
+  animation:slideIn 0.3s ease;
+}
+@keyframes slideIn{
+  from{
+    opacity:0;
+    transform:translateX(-10px);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0);
+  }
+}
+.comment:hover{
+  background:var(--hover);
+  transform:translateX(4px);
+}
+.comment-content{
+  flex:1;
+}
+.comment-author{
+  font-weight:600;
+  font-size:14px;
+  margin-right:8px;
+}
+.comment-text{
+  font-size:14px;
+  color:var(--text);
+  opacity:0.9;
+}
+.empty-state{
+  text-align:center;
+  padding:60px 20px;
+  color:#6b7280;
+}
+.empty-state-icon{
+  font-size:64px;
+  margin-bottom:16px;
+}
+
+/* Right Sidebar */
+.right-sidebar{
+  position:sticky;
+  top:80px;
+  height:fit-content;
+}
+.sidebar-card{
+  background:var(--card);
+  padding:24px;
+  border-radius:20px;
+  margin-bottom:24px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.08);
+  transition:transform 0.2s;
+}
+.sidebar-card:hover{
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+}
+.account-info{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:24px;
+  padding-bottom:24px;
+  border-bottom:1px solid var(--border);
+  transition:transform 0.2s;
+}
+.account-info:hover{
+  transform:translateX(4px);
+}
+.account-info img{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--primary);
+  transition:transform 0.3s;
+  cursor:pointer;
+}
+.account-info:hover img{
+  transform:scale(1.1) rotate(5deg);
+}
+.account-details h3{
+  font-size:16px;
+  margin-bottom:4px;
+}
+.account-details p{
+  font-size:13px;
+  color:#6b7280;
+}
+.sidebar-section-title{
+  font-size:14px;
+  font-weight:600;
+  margin-bottom:12px;
+  color:#6b7280;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.friend-request-item,.suggestion-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+  transition:background 0.2s;
+  border-radius:8px;
+  margin:0 -8px;
+  padding-left:8px;
+  padding-right:8px;
+}
+.friend-request-item:hover,.suggestion-item:hover{
+  background:var(--hover);
+}
+.friend-request-item:last-child,.suggestion-item:last-child{
+  border-bottom:none;
+}
+.friend-info,.suggestion-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex:1;
+}
+.friend-info img,.suggestion-info img{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid var(--border);
+  transition:transform 0.2s;
+}
+.friend-info:hover img,.suggestion-info:hover img{
+  transform:scale(1.1);
+}
+.friend-name,.suggestion-name{
+  font-size:15px;
+  font-weight:600;
+  color:var(--text);
+}
+.request-actions{
+  display:flex;
+  gap:8px;
+}
+.request-actions button{
+  padding:8px 16px;
+  font-size:13px;
+  border-radius:8px;
+  font-weight:600;
+  transition:all 0.2s;
+}
+.request-actions button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+.request-actions .accept-btn{
+  background:var(--primary);
+}
+.request-actions .decline-btn{
+  background:#ef4444;
+}
+.request-actions .follow-btn{
+  background:var(--primary);
+}
+.request-actions .following-btn{
+  background:var(--hover);
+  color:var(--text);
+}
+
+/* Search Results */
+.search-results{
+  position:absolute;
+  top:100%;
+  left:0;
+  right:0;
+  background:var(--card);
+  border-radius:16px;
+  margin-top:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.15);
+  max-height:400px;
+  overflow-y:auto;
+  display:none;
+  z-index:200;
+  animation:slideDown 0.3s ease;
+  border:1px solid var(--border);
+}
+.search-results.show{
+  display:block;
+}
+.search-results::-webkit-scrollbar{
+  width:6px;
+}
+.search-results::-webkit-scrollbar-track{
+  background:var(--hover);
+}
+.search-results::-webkit-scrollbar-thumb{
+  background:var(--primary);
+  border-radius:10px;
+}
+.search-result-item{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 16px;
+  cursor:pointer;
+  transition:all 0.2s;
+  border-bottom:1px solid var(--border);
+}
+.search-result-item:hover{
+  background:var(--hover);
+  transform:translateX(4px);
+  padding-left:20px;
+}
+.search-result-item img{
+  transition:transform 0.2s;
+}
+.search-result-item:hover img{
+  transform:scale(1.1);
+}
+.search-result-item:last-child{
+  border-bottom:none;
+}
+.search-result-item img{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.toast{
+  position:fixed;
+  bottom:32px;
+  right:32px;
+  background:linear-gradient(135deg,#1f2937,#111827);
+  color:#fff;
+  padding:18px 28px;
+  border-radius:16px;
+  opacity:0;
+  transform:translateY(30px) scale(0.9);
+  transition:all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+  z-index:1000;
+  font-weight:500;
+  max-width:300px;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.toast.show{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+
+/* Responsive */
+@media(max-width:1200px){
+  .layout{
+    grid-template-columns:240px 1fr 280px;
+  }
+}
+@media(max-width:968px){
+  .layout{
+    grid-template-columns:1fr;
+  }
+  .left-sidebar,.right-sidebar{
+    display:none;
+  }
+  header .search-container{
+    max-width:200px;
+  }
+}
+@media(max-width:640px){
+  header{padding:12px 16px}
+  header .search-container{
+    display:none;
+  }
+  .layout{padding:16px 12px}
+  .card{padding:16px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Pure Social Spark</div>
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search accounts..." onkeyup="handleSearch(event)">
+    <span class="search-icon">🔍</span>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+  <div class="nav-actions">
+    <span class="nav-icon" onclick="window.location.href='login.html'">👤</span>
+    <span class="nav-icon" onclick="toggleDark()">🌙</span>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- Left Sidebar -->
+  <aside class="left-sidebar">
+    <a href="#" class="sidebar-item active" onclick="setActive(this);return false">
+      <span class="sidebar-item-icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="profile.html" class="sidebar-item" onclick="setActive(this)">
+      <span class="sidebar-item-icon">👤</span>
+      <span>Profile</span>
+    </a>
+    <a href="#" class="sidebar-item" onclick="setActive(this);return false">
+      <span class="sidebar-item-icon">🔍</span>
+      <span>Explore</span>
+    </a>
+    <a href="#" class="sidebar-item" onclick="setActive(this);return false">
+      <span class="sidebar-item-icon">💬</span>
+      <span>Messages</span>
+    </a>
+    <a href="#" class="sidebar-item" onclick="setActive(this);return false">
+      <span class="sidebar-item-icon">🔔</span>
+      <span>Notifications</span>
+    </a>
+    <a href="#" class="sidebar-item" onclick="setActive(this);return false">
+      <span class="sidebar-item-icon">⚙️</span>
+      <span>Settings</span>
+    </a>
+    <a href="login.html" class="sidebar-item" onclick="logout()">
+      <span class="sidebar-item-icon">🚪</span>
+      <span>Logout</span>
+    </a>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Stories Section -->
+    <div class="stories-container">
+      <div class="stories" id="storiesList">
+        <!-- Stories will be dynamically added -->
+      </div>
+    </div>
+
+    <!-- Create Post -->
+    <div class="card create-post">
+      <div class="create-post-header">
+        <img class="profile-img" id="userAvatar" src="https://i.pravatar.cc/48?img=1" alt="Profile">
+        <div>
+          <div id="userName" style="font-weight:600">Guest User</div>
+          <div style="font-size:12px;color:#6b7280">Share your thoughts...</div>
+        </div>
+      </div>
+      <textarea id="postCaption" placeholder="What's happening?"></textarea>
+      <div class="create-post-actions">
+        <div class="file-input-wrapper">
+          <input type="file" id="postImage" accept="image/*">
+          <label for="postImage" class="file-input-label">
+            📷 Photo
+          </label>
+        </div>
+        <button onclick="createPost()">Post</button>
+      </div>
+    </div>
+
+    <!-- Feed -->
+    <div id="feed" class="feed"></div>
+  </main>
+
+  <!-- Right Sidebar -->
+  <aside class="right-sidebar">
+    <!-- Account Info -->
+    <div class="sidebar-card">
+      <div class="account-info">
+        <img id="accountAvatar" src="https://i.pravatar.cc/60?img=1" alt="Account">
+        <div class="account-details">
+          <h3 id="accountName">Guest User</h3>
+          <p id="accountUsername">@guest_user</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Friend Requests -->
+    <div class="sidebar-card">
+      <div class="sidebar-section-title">Friend Requests</div>
+      <div id="friendRequests">
+        <!-- Friend requests will be dynamically added -->
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="sidebar-card">
+      <div class="sidebar-section-title">People You May Know</div>
+      <div id="suggestions">
+        <!-- Suggestions will be dynamically added -->
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* ---------- HELPERS ---------- */
+const qs=id=>document.getElementById(id);
+const toast=msg=>{
+  const t=qs("toast");
+  t.textContent=msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),3000);
+};
+const formatTime=timestamp=>{
+  const now=Date.now();
+  const diff=now-timestamp;
+  const mins=Math.floor(diff/60000);
+  const hours=Math.floor(diff/3600000);
+  const days=Math.floor(diff/86400000);
+  if(mins<1)return"Just now";
+  if(mins<60)return`${mins}m ago`;
+  if(hours<24)return`${hours}h ago`;
+  return`${days}d ago`;
+};
+
+/* ---------- DATA ---------- */
+let users = JSON.parse(localStorage.getItem("users") || "[]");
+let posts = JSON.parse(localStorage.getItem("posts") || "[]");
+let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+let friendRequests = JSON.parse(localStorage.getItem("friendRequests") || "[]");
+let suggestions = JSON.parse(localStorage.getItem("suggestions") || "[]");
+let stories = JSON.parse(localStorage.getItem("stories") || "[]");
+
+/* ---------- INIT USER ---------- */
+if (!currentUser) {
+  // Check if user is logged in, if not redirect to login
+  const loggedInUser = localStorage.getItem("loggedInUser");
+  if (!loggedInUser) {
+    // Allow guest mode for demo, but can redirect to login if needed
+    // window.location.href = "login.html";
+    currentUser = {
+      id: Date.now(),
+      username: "Guest User",
+      avatar: "https://i.pravatar.cc/48?img=1",
+      bio: ""
+    };
+    if(!users.find(u=>u.id===currentUser.id)){
+      users.push(currentUser);
+    }
+    save();
+  } else {
+    currentUser = JSON.parse(loggedInUser);
+    // Also set currentUser in localStorage
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  }
+}
+
+// Initialize demo data if empty
+if(users.length===0){
+  users=[
+    {id:1,username:"Satyam",avatar:"https://i.pravatar.cc/48?img=12",bio:"Tech enthusiast"},
+    {id:2,username:"Pratik",avatar:"https://i.pravatar.cc/48?img=5",bio:"Photographer"},
+    {id:3,username:"Shivam",avatar:"https://i.pravatar.cc/48?img=8",bio:"Designer"},
+    {id:4,username:"Ansh",avatar:"https://i.pravatar.cc/48?img=9",bio:"Writer"},
+    {id:5,username:"Siddharth",avatar:"https://i.pravatar.cc/48?img=11",bio:"Developer"}
+  ];
+  localStorage.setItem("users",JSON.stringify(users));
+}
+
+if(friendRequests.length===0){
+  friendRequests=[
+    {id:1,username:"Rahul Kumar",avatar:"https://i.pravatar.cc/48?img=13"},
+    {id:2,username:"Priya Sharma",avatar:"https://i.pravatar.cc/48?img=14"}
+  ];
+  localStorage.setItem("friendRequests",JSON.stringify(friendRequests));
+}
+
+if(suggestions.length===0){
+  suggestions=[
+    {id:3,username:"Amit Patel",avatar:"https://i.pravatar.cc/48?img=15"},
+    {id:4,username:"Neha Singh",avatar:"https://i.pravatar.cc/48?img=16"},
+    {id:5,username:"Rohan Mehta",avatar:"https://i.pravatar.cc/48?img=17"}
+  ];
+  localStorage.setItem("suggestions",JSON.stringify(suggestions));
+}
+
+if(stories.length===0){
+  stories=[
+    {userId:1,username:"Satyam",avatar:"https://i.pravatar.cc/48?img=12",image:"https://picsum.photos/400/600?random=1"},
+    {userId:2,username:"Pratik",avatar:"https://i.pravatar.cc/48?img=5",image:"https://picsum.photos/400/600?random=2"},
+    {userId:3,username:"Shivam",avatar:"https://i.pravatar.cc/48?img=8",image:"https://picsum.photos/400/600?random=3"},
+    {userId:4,username:"Ansh",avatar:"https://i.pravatar.cc/48?img=9",image:"https://picsum.photos/400/600?random=4"}
+  ];
+  localStorage.setItem("stories",JSON.stringify(stories));
+}
+
+// Add some demo posts from other users
+if(posts.length===0){
+  posts=[
+    {
+      postId:1,
+      userId:1,
+      caption:"Beautiful sunset today! 🌅",
+      image:"https://picsum.photos/600/400?random=10",
+      likes:[currentUser.id],
+      comments:[],
+      timestamp:Date.now()-3600000
+    },
+    {
+      postId:2,
+      userId:2,
+      caption:"New project coming soon! Stay tuned.",
+      image:"https://picsum.photos/600/400?random=11",
+      likes:[],
+      comments:[],
+      timestamp:Date.now()-7200000
+    },
+    {
+      postId:3,
+      userId:3,
+      caption:"Coffee and code ☕",
+      image:"https://picsum.photos/600/400?random=12",
+      likes:[currentUser.id],
+      comments:[],
+      timestamp:Date.now()-10800000
+    }
+  ];
+  localStorage.setItem("posts",JSON.stringify(posts));
+}
+
+/* ---------- UPDATE UI ---------- */
+if(currentUser){
+  qs("userName").textContent=currentUser.username||"Guest User";
+  qs("accountName").textContent=currentUser.username||"Guest User";
+  qs("accountUsername").textContent="@"+(currentUser.username||"guest_user").toLowerCase().replace(/\s+/g,"_");
+  if(currentUser.avatar){
+    qs("userAvatar").src=currentUser.avatar;
+    qs("accountAvatar").src=currentUser.avatar;
+  }
+}
+
+/* ---------- STORAGE ---------- */
+function save(){
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("posts", JSON.stringify(posts));
+  localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  localStorage.setItem("friendRequests", JSON.stringify(friendRequests));
+  localStorage.setItem("suggestions", JSON.stringify(suggestions));
+}
+
+/* ---------- STORIES ---------- */
+function renderStories(){
+  const storiesList=qs("storiesList");
+  storiesList.innerHTML=stories.map(s=>`
+    <div class="story" onclick="viewStory('${s.username}','${s.image}')">
+      <img src="${s.avatar}" class="story-img" alt="${s.username}">
+      <div class="story-name">${s.username}</div>
+    </div>
+  `).join("");
+}
+function viewStory(username,image){
+  const overlay=document.createElement("div");
+  overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;cursor:pointer";
+  const img=document.createElement("img");
+  img.src=image;
+  img.style.cssText="max-height:80%;max-width:90%;border-radius:20px";
+  const name=document.createElement("p");
+  name.textContent=username;
+  name.style.cssText="color:white;margin-top:20px;font-size:20px;font-weight:bold";
+  overlay.appendChild(img);
+  overlay.appendChild(name);
+  overlay.onclick=()=>document.body.removeChild(overlay);
+  document.body.appendChild(overlay);
+}
+
+/* ---------- FRIEND REQUESTS ---------- */
+function renderFriendRequests(){
+  const container=qs("friendRequests");
+  if(friendRequests.length===0){
+    container.innerHTML='<p style="color:#6b7280;font-size:14px;text-align:center;padding:20px">No friend requests</p>';
+    return;
+  }
+  container.innerHTML=friendRequests.map(fr=>`
+    <div class="friend-request-item">
+      <div class="friend-info">
+        <img src="${fr.avatar}" alt="${fr.username}">
+        <div class="friend-name">${fr.username}</div>
+      </div>
+      <div class="request-actions">
+        <button class="accept-btn" onclick="acceptRequest(${fr.id})">Accept</button>
+        <button class="decline-btn" onclick="declineRequest(${fr.id})">Decline</button>
+      </div>
+    </div>
+  `).join("");
+}
+function acceptRequest(id){
+  const fr=friendRequests.find(f=>f.id===id);
+  if(fr){
+    friendRequests=friendRequests.filter(f=>f.id!==id);
+    save();
+    renderFriendRequests();
+    toast(`✅ Friend request from ${fr.username} accepted!`);
+  }
+}
+function declineRequest(id){
+  const fr=friendRequests.find(f=>f.id===id);
+  if(fr){
+    friendRequests=friendRequests.filter(f=>f.id!==id);
+    save();
+    renderFriendRequests();
+    toast(`❌ Friend request from ${fr.username} declined`);
+  }
+}
+
+/* ---------- SUGGESTIONS ---------- */
+function renderSuggestions(){
+  const container=qs("suggestions");
+  if(suggestions.length===0){
+    container.innerHTML='<p style="color:#6b7280;font-size:14px;text-align:center;padding:20px">No suggestions</p>';
+    return;
+  }
+  container.innerHTML=suggestions.map(s=>`
+    <div class="suggestion-item">
+      <div class="suggestion-info">
+        <img src="${s.avatar}" alt="${s.username}">
+        <div class="suggestion-name">${s.username}</div>
+      </div>
+      <div class="request-actions">
+        <button class="follow-btn" id="follow-${s.id}" onclick="followUser(${s.id})">Follow</button>
+      </div>
+    </div>
+  `).join("");
+}
+function followUser(id){
+  const btn=qs(`follow-${id}`);
+  if(btn.textContent==="Follow"){
+    btn.textContent="Following";
+    btn.className="following-btn";
+    toast("✅ Now following!");
+  }else{
+    btn.textContent="Follow";
+    btn.className="follow-btn";
+    toast("💔 Unfollowed");
+  }
+}
+
+/* ---------- SEARCH ---------- */
+function handleSearch(e){
+  const query=e.target.value.trim().toLowerCase();
+  const results=qs("searchResults");
+  if(query.length===0){
+    results.classList.remove("show");
+    return;
+  }
+  const matches=users.filter(u=>
+    u.username.toLowerCase().includes(query)&&u.id!==currentUser.id
+  );
+  if(matches.length===0){
+    results.innerHTML='<div class="search-result-item"><p style="padding:12px;color:#6b7280">No users found</p></div>';
+  }else{
+    results.innerHTML=matches.map(u=>`
+      <div class="search-result-item" onclick="viewProfile(${u.id})">
+        <img src="${u.avatar}" alt="${u.username}">
+        <div>
+          <div style="font-weight:600">${u.username}</div>
+          <div style="font-size:12px;color:#6b7280">${u.bio||""}</div>
+        </div>
+      </div>
+    `).join("");
+  }
+  results.classList.add("show");
+}
+function viewProfile(id){
+  qs("searchResults").classList.remove("show");
+  qs("searchInput").value="";
+  toast(`Viewing ${users.find(u=>u.id===id).username}'s profile`);
+  // Can navigate to profile page here
+}
+
+// Close search results when clicking outside
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".search-container")){
+    qs("searchResults").classList.remove("show");
+  }
+});
+
+/* ---------- POSTS ---------- */
+function createPost(){
+  const file = qs("postImage").files[0];
+  const cap = qs("postCaption").value.trim();
+  if(!file && !cap) return toast("⚠️ Post cannot be empty");
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    posts.unshift({
+      postId: Date.now(),
+      userId: currentUser.id,
+      image: reader.result,
+      caption: cap,
+      likes: [],
+      comments: [],
+      timestamp: Date.now()
+    });
+    save();
+    renderFeed();
+    qs("postCaption").value="";
+    qs("postImage").value="";
+    toast("✅ Post created successfully!");
+  };
+  file ? reader.readAsDataURL(file) : reader.onload();
+}
+
+/* ---------- FEED ---------- */
+function renderFeed(){
+  const feed = qs("feed");
+  if(posts.length===0){
+    feed.innerHTML=`
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <h3>No posts yet</h3>
+        <p>Be the first to share something!</p>
+      </div>
+    `;
+    return;
+  }
+  feed.innerHTML="";
+  posts.forEach(p=>{
+    const u = users.find(x=>x.id===p.userId)||currentUser;
+    const liked=p.likes.includes(currentUser.id);
+    const div=document.createElement("div");
+    div.className="card post-card";
+    div.innerHTML=`
+      <div class="post-header">
+        <img class="profile-img" src="${u.avatar||'https://i.pravatar.cc/48'}" alt="${u.username}">
+        <div class="post-header-info">
+          <div class="username">${u.username}</div>
+          <div class="time">${formatTime(p.timestamp)}</div>
+        </div>
+      </div>
+
+      ${p.caption?`<div class="post-caption">${p.caption}</div>`:""}
+      ${p.image?`<img src="${p.image}" class="post-image" alt="Post image">`:""}
+
+      <div class="post-actions">
+        <button class="action-btn ${liked?'liked':''}" onclick="toggleLike(${p.postId})">
+          ${liked?'❤️':'🤍'} <span>${p.likes.length||0}</span>
+        </button>
+        <button class="action-btn" onclick="focusComment(${p.postId})">
+          💬 <span>${p.comments.length||0}</span>
+        </button>
+        <button class="action-btn" onclick="sharePost(${p.postId})">
+          🔗 Share
+        </button>
+      </div>
+
+      <div class="comments-section">
+        ${p.comments.length>0?`
+          <div id="comments-${p.postId}">
+            ${p.comments.map(c=>`
+              <div class="comment">
+                <img class="profile-img" src="${c.avatar||'https://i.pravatar.cc/32'}" style="width:32px;height:32px">
+                <div class="comment-content">
+                  <span class="comment-author">${c.user}</span>
+                  <span class="comment-text">${c.text}</span>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `:''}
+        <div class="comment-input-wrapper">
+          <img class="profile-img" src="${currentUser.avatar||'https://i.pravatar.cc/32'}" style="width:32px;height:32px">
+          <input type="text" id="comment-${p.postId}" placeholder="Add a comment..." 
+            onkeydown="if(event.key==='Enter')addComment(${p.postId},this)">
+          <button onclick="addComment(${p.postId},qs('comment-${p.postId}'))">Post</button>
+        </div>
+      </div>
+    `;
+    feed.appendChild(div);
+  });
+}
+
+/* ---------- INTERACTIONS ---------- */
+function toggleLike(id){
+  const p = posts.find(x=>x.postId===id);
+  if(!p)return;
+  const i = p.likes.indexOf(currentUser.id);
+  i>-1 ? p.likes.splice(i,1) : p.likes.push(currentUser.id);
+  save(); 
+  renderFeed();
+  toast(i>-1?"💔 Unliked":"❤️ Liked");
+}
+function addComment(id,input){
+  if(!input.value.trim()) return;
+  const p = posts.find(x=>x.postId===id);
+  if(!p)return;
+  p.comments.push({
+    user: currentUser.username,
+    avatar: currentUser.avatar,
+    text: input.value.trim(),
+    time: Date.now()
+  });
+  input.value="";
+  save(); 
+  renderFeed();
+  toast("💬 Comment added");
+}
+function focusComment(id){
+  const input=qs(`comment-${id}`);
+  if(input)input.focus();
+}
+function sharePost(id){
+  if(navigator.share){
+    navigator.share({
+      title:"Check out this post!",
+      text:"Shared from Pure Social Spark"
+    }).catch(()=>toast("📋 Link copied to clipboard"));
+  }else{
+    navigator.clipboard.writeText(window.location.href);
+    toast("📋 Link copied to clipboard");
+  }
+}
+function setActive(el){
+  document.querySelectorAll(".sidebar-item").forEach(item=>item.classList.remove("active"));
+  el.classList.add("active");
+}
+function logout(){
+  localStorage.removeItem("currentUser");
+  localStorage.removeItem("loggedInUser");
+  window.location.href="login.html";
+}
+function toggleDark(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("darkMode",document.body.classList.contains("dark"));
+}
+
+/* ---------- INIT ---------- */
+if(localStorage.getItem("darkMode")==="true"){
+  document.body.classList.add("dark");
+}
+renderStories();
+renderFriendRequests();
+renderSuggestions();
+renderFeed();
+
+// Allow Enter key to submit post
+qs("postCaption").addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.ctrlKey)createPost();
+});
+</script>
+
+</body>
+</html>
