@@ -1,9 +1,4 @@
-/*
-  Global styles for Pure Social Spark
-  - Home feed
-  - Profile page
-  - Auth pages
-*/
+
 
 :root {
   --bg:#f4f6fb;
@@ -32,7 +27,7 @@ body{
   transition:background 0.3s,color 0.3s;
 }
 
-/* ---------------- AUTH PAGES ---------------- */
+
 body.auth-bg{
   min-height:100vh;
   display:flex;
@@ -112,7 +107,7 @@ form button:active{transform:scale(0.97);}
 .switch-box a{color:#0095f6;text-decoration:none;font-weight:bold;}
 .terms{font-size:12px;color:#8e8e8e;margin-top:15px;}
 
-/* ---------------- GLOBAL CONTROLS ---------------- */
+
 button{
   background:var(--primary);
   color:#fff;
